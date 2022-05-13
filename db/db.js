@@ -109,9 +109,6 @@ async function addPanic(userId, deviceId, panicTypeId, lat, long) {
 async function getAllPanics() {
   await client.connect();
 
-  // const myuuid    = uuid.v4();
-  // const unixTime  = Math.floor(Date.now() / 1000);
-
   const query = `
     SELECT 
       panic.panic_id,
@@ -123,13 +120,13 @@ async function getAllPanics() {
       panic.long,
       panic.timestamp,
       usr.user_id,
-      usr.name,
+      usr.name AS username,
       usr.mobile,
       usr.address,
       device.device_id,
-      device.name,
+      device.name AS devicename,
       panictype.panictype_id,
-      panictype.name
+      panictype.name AS panictypename
     
     FROM 
   
@@ -141,19 +138,23 @@ async function getAllPanics() {
   `;
   
 
+  var resultsArr = [];
+
   try {
     const res = await client.query(query, []);
+    console.log(res);
     for(var i = 0; i < res.rows.length; i++) {
-      var obj             = res.rows[0];
-      console.log(obj);
+      if(res.rowCount > 0) {
+        resultsArr.push(res.rows[i])
+      }
     }
 
-    return res;
   } catch (err) {
     console.log(err.stack)
   }
 
   await client.end();
+  return resultsArr;
 }
 
 async function getUserDetais(userId) {
