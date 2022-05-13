@@ -43,21 +43,12 @@ module.exports.addPanic = async (event) => {
 
 module.exports.getAllPanics = async (event) => {
 
-  // const body        = JSON.parse(event.body);
-  // const userId      = body.userid;
-  // const deviceid    = body.deviceid;
-  // const panictypeid = body.panictypeid;
-  // const lat         = body.lat;
-  // const long        = body.userid;
- 
   var result = await db.getAllPanics();
-
-  let parsed = result.rows;
 
   return {
     statusCode: 200,
     body: JSON.stringify(
-      parsed,
+      result,
       null, 
       2
     ),
