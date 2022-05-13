@@ -113,18 +113,40 @@ async function getAllPanics() {
   // const unixTime  = Math.floor(Date.now() / 1000);
 
   const query = `
-    SELECT * FROM "Panics"
+    SELECT 
+      panic.panic_id,
+      panic.fk_user_id,
+      panic.fk_device_id,
+      panic.fk_client_id,
+      panic.fk_panictype_id,
+      panic.lat,
+      panic.long,
+      panic.timestamp,
+      usr.user_id,
+      usr.name,
+      usr.mobile,
+      usr.address,
+      device.device_id,
+      device.name,
+      panictype.panictype_id,
+      panictype.name
+    
+    FROM 
+  
+      "Panics" panic
+  
+    INNER JOIN "Users" 		  usr 		  on panic.fk_user_id 		  = usr.user_id
+    INNER JOIN "Devices" 	  device 		on panic.fk_device_id 		= device.device_id
+    INNER JOIN "PanicTypes" panictype on panic.fk_panictype_id 	= panictype.panictype_id;
   `;
   
 
-
   try {
     const res = await client.query(query, []);
-    console.log("RESULTS!");
-    for(var i = 0; i < res.length; i++) {
-      var obj = json[i];
-      console.log(obj.panic_id);
-  }
+    for(var i = 0; i < res.rows.length; i++) {
+      var obj             = res.rows[0];
+      console.log(obj);
+    }
 
     return res;
   } catch (err) {
@@ -132,6 +154,36 @@ async function getAllPanics() {
   }
 
   await client.end();
+}
+
+async function getUserDetais(userId) {
+  const query = `
+  SELECT * FROM "Users" WHERE user_id = '${userId}'
+  `;
+
+  try {
+    const res = await client.query(query, []);
+    if(res.rowCount > 0) {
+      return res.rows[0];
+    }
+  } catch (error) {
+    console.log(err.stack)
+  }
+}
+
+async function getDeviceDetails(deviceId) {
+  const query = `
+  SELECT * FROM "Devices" WHERE device_id = '${deviceId}'
+  `;
+
+  try {
+    const res = await client.query(query, []);
+    if(res.rowCount > 0) {
+      return res.rows;
+    }
+  } catch (error) {
+    console.log(err.stack)
+  }
 }
 
 module.exports = { addClient, addUser, addDevice, addPanicType, addPanic, getAllPanics }
