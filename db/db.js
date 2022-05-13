@@ -1,8 +1,8 @@
 "use strict";
 const uuid        = require('uuid');
-const { Client }  = require('pg');
+const { Client, Pool }  = require('pg');
 
-const client = new Client({
+const client = new Pool({
   user: '',
   host: '',
   database: '',
@@ -11,7 +11,6 @@ const client = new Client({
 });
 
 async function addClient(name) {
-  await client.connect();
 
   let myuuid = uuid.v4();
  
@@ -24,13 +23,12 @@ async function addClient(name) {
     const res = await client.query(query, []);
   } catch (err) {
     console.log(err.stack)
+  } finally {
+    // await client.end();
   }
-
-  await client.end();
 }
 
 async function addUser(name, mobile, address) {
-  await client.connect();
 
   let myuuid = uuid.v4();
  
@@ -43,13 +41,12 @@ async function addUser(name, mobile, address) {
     const res = await client.query(query, []);
   } catch (err) {
     console.log(err.stack)
+  } finally {
+    // await client.end();
   }
-
-  await client.end();
 }
 
 async function addDevice(name) {
-  await client.connect();
 
   let myuuid = uuid.v4();
  
@@ -62,13 +59,12 @@ async function addDevice(name) {
     const res = await client.query(query, []);
   } catch (err) {
     console.log(err.stack)
+  } finally {
+    // await client.end();
   }
-
-  await client.end();
 }
 
 async function addPanicType(name) {
-  await client.connect();
 
   let myuuid = uuid.v4();
  
@@ -81,13 +77,12 @@ async function addPanicType(name) {
     const res = await client.query(query, []);
   } catch (err) {
     console.log(err.stack)
+  }finally {
+    // await client.end();
   }
-
-  await client.end();
 }
 
 async function addPanic(userId, deviceId, panicTypeId, lat, long) {
-  await client.connect();
 
   const myuuid    = uuid.v4();
   const unixTime  = Math.floor(Date.now() / 1000);
@@ -100,14 +95,13 @@ async function addPanic(userId, deviceId, panicTypeId, lat, long) {
   try {
     const res = await client.query(query, []);
   } catch (err) {
-    console.log(err.stack)
+    console.log(err.stack);
+  }finally {
+    // await client.end();
   }
-
-  await client.end();
 }
 
 async function getAllPanics() {
-  await client.connect();
 
   const query = `
     SELECT 
@@ -142,7 +136,7 @@ async function getAllPanics() {
 
   try {
     const res = await client.query(query, []);
-    console.log(res);
+    
     for(var i = 0; i < res.rows.length; i++) {
       if(res.rowCount > 0) {
         resultsArr.push(res.rows[i])
@@ -151,40 +145,10 @@ async function getAllPanics() {
 
   } catch (err) {
     console.log(err.stack)
+  } finally {
+    // await client.end();
   }
-
-  await client.end();
   return resultsArr;
-}
-
-async function getUserDetais(userId) {
-  const query = `
-  SELECT * FROM "Users" WHERE user_id = '${userId}'
-  `;
-
-  try {
-    const res = await client.query(query, []);
-    if(res.rowCount > 0) {
-      return res.rows[0];
-    }
-  } catch (error) {
-    console.log(err.stack)
-  }
-}
-
-async function getDeviceDetails(deviceId) {
-  const query = `
-  SELECT * FROM "Devices" WHERE device_id = '${deviceId}'
-  `;
-
-  try {
-    const res = await client.query(query, []);
-    if(res.rowCount > 0) {
-      return res.rows;
-    }
-  } catch (error) {
-    console.log(err.stack)
-  }
 }
 
 module.exports = { addClient, addUser, addDevice, addPanicType, addPanic, getAllPanics }

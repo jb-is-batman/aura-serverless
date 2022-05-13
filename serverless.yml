@@ -6,21 +6,12 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs14.x
-  # httpApi:
-  #   authorizers:
-  #     customAuthorizer:
-  #       type: request
-  #       functionName: authorizerFunc
+  memorySize: 512
+  timeout: 10 
+  httpApi:
+    cors: true
 
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - httpApi:
-          path: /
-          method: get
-          # authorizer:
-          #   name: customAuthorizer
 
   createClient:
     handler: db/clients.addClient
