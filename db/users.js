@@ -19,6 +19,18 @@ module.exports.addUser = async (event) => {
       2
     ),
   };
+};
 
-  
+module.exports.getAllUsers = async (event) => {
+
+  var res = await db.getAllUsers();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(
+      res.rows,
+      null, 
+      2
+    ),
+  };
 };

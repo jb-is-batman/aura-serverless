@@ -46,6 +46,22 @@ async function addUser(name, mobile, address) {
   }
 }
 
+async function getAllUsers() {
+ 
+  const query = `
+    SELECT * FROM "Users"
+  `;
+  
+  try {
+    const res = await client.query(query, []);
+    return res;
+  } catch (err) {
+    console.log(err.stack)
+  } finally {
+    // await client.end();
+  }
+}
+
 async function addDevice(name) {
 
   let myuuid = uuid.v4();
@@ -151,4 +167,4 @@ async function getAllPanics() {
   return resultsArr;
 }
 
-module.exports = { addClient, addUser, addDevice, addPanicType, addPanic, getAllPanics }
+module.exports = { addClient, addUser, addDevice, addPanicType, addPanic, getAllPanics, getAllUsers }
