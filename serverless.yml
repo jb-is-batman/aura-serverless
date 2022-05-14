@@ -30,6 +30,15 @@ functions:
           # authorizer:
           #   name: customAuthorizer
 
+  getAllClients:
+    handler: db/clients.getAllClients
+    events:
+      - httpApi:
+          path: /client
+          method: get
+          # authorizer:
+          #   name: customAuthorizer
+
   createUser:
     handler: db/users.addUser
     events:

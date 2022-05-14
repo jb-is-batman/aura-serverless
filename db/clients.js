@@ -18,3 +18,17 @@ module.exports.addClient = async (event) => {
     ),
   };
 };
+
+module.exports.getAllClients = async (event) => {
+
+  var res = await db.getAllClients();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(
+      res.rows,
+      null, 
+      2
+    ),
+  };
+};
