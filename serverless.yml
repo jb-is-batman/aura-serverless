@@ -12,6 +12,14 @@ provider:
     cors: true
 
 functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+          # authorizer:
+          #   name: customAuthorizer
 
   createClient:
     handler: db/clients.addClient
@@ -28,6 +36,15 @@ functions:
       - httpApi:
           path: /user
           method: post
+          # authorizer:
+          #   name: customAuthorizer
+
+  getAllUsers:
+    handler: db/users.getAllUsers
+    events:
+      - httpApi:
+          path: /user
+          method: get
           # authorizer:
           #   name: customAuthorizer
 
